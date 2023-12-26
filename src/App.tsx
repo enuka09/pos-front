@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
 import './App.css'
+import Product from "./components/Product";
+import Home from "./components/Home";
+import Customer from "./components/Customer";
+import Order from "./components/Order";
 
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <Router>
+            <div>
+                <nav className="navbar navbar-expand-lg bg-body-tertiary">
+                    <div className="container-fluid">
+                        <div className="navbar-brand">
+                            <img src="https://www.unipeak.online/assets/img/logo.png" alt="logo" className='logo'/>
+                        </div>
+                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="collapse navbar-collapse" id="navbarNav">
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <Link to='/' className="nav-link active" aria-current="page">Home</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to='/customer' className="nav-link">Customers</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to='/product' className="nav-link">Products</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to='/orders' className="nav-link">Order Management</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+                <Routes>
+                    <Route path='/' element={<Home/>}/>
+                    <Route path='/customer' element={<Customer/>}/>
+                    <Route path='/product' element={<Product/>}/>
+                    <Route path='/orders' element={<Order/>}/>
+                </Routes>
+            </div>
+        </Router>
+    )
 }
 
 export default App
