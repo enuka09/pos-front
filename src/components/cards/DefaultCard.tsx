@@ -1,13 +1,13 @@
 interface DefaultCardData {
-    thumbnail:string,
-    title:string,
-    description:string,
-    value:number
+    thumbnail: string,
+    title: string,
+    description: string,
+    value: number | undefined
 }
 
-function DefaultCard(props:DefaultCardData) {
+function DefaultCard(props: DefaultCardData) {
     const maxWidthStyle = {
-        maxWidth:'540px'
+        maxWidth: '540px'
     }
 
     return (

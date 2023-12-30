@@ -42,16 +42,18 @@ const Customer: React.FC = () => {
             setName('');
             setAddress('');
             setSalary('');
+            findAllCustomers();
         } catch (e) {
             console.log(e)
         }
     }
 
-    const deleteCustomer = async (id) => {
+    const deleteCustomer = async (id:string) => {
         await axios.delete('http://localhost:3000/api/v1/customers/delete-by-id/' + id);
+        findAllCustomers();
     }
 
-    const loadModal = async (id) => {
+    const loadModal = async (id:string) => {
         const customerRecord = await axios.get('http://localhost:3000/api/v1/customers/find-by-id/' + id);
         setSelectedCustomerId(customerRecord.data._id)
         setUpdatedName(customerRecord.data.name);
@@ -183,7 +185,7 @@ const Customer: React.FC = () => {
                         <div className="form-group">
                             <input type="number" defaultValue={updatedSalary}
                                    onChange={(e) => setUpdatedSalary(parseFloat(e.target.value))}
-                                   className='form-control' placeholder='Salary'/>
+                                   className='form-control' placeholder='Salary' min={0}/>
                         </div>
                     </div>
                     <br/>
