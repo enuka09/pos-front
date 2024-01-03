@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Modal} from "react-bootstrap";
 import axios from "axios";
+import Customer from "../models/CustomerModel"
 
-interface Customer {
-    _id: string,
-    name: string,
-    address: string,
-    salary: number
-}
+const CustomerComponent: React.FC = () => {
 
-const Customer: React.FC = () => {
-
-    const [customers, setCustomers] = useState<Customer[]>([])
+    const [customers, setCustomers] = useState<Customer[]>([]) // Here Customer = 'interface Customer' in 'CustomerModel'
 
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
@@ -48,12 +42,12 @@ const Customer: React.FC = () => {
         }
     }
 
-    const deleteCustomer = async (id:string) => {
+    const deleteCustomer = async (id: string) => {
         await axios.delete('http://localhost:3000/api/v1/customers/delete-by-id/' + id);
         findAllCustomers();
     }
 
-    const loadModal = async (id:string) => {
+    const loadModal = async (id: string) => {
         const customerRecord = await axios.get('http://localhost:3000/api/v1/customers/find-by-id/' + id);
         setSelectedCustomerId(customerRecord.data._id)
         setUpdatedName(customerRecord.data.name);
@@ -203,4 +197,4 @@ const Customer: React.FC = () => {
     )
 }
 
-export default Customer
+export default CustomerComponent

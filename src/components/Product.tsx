@@ -1,19 +1,11 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import axios from "axios";
 import {Modal} from "react-bootstrap";
+import Product from "../models/ProductModel"
 
 // import {storage} from "../config/firebase";
 
-interface Product {
-    _id:string,
-    name: string,
-    description: string,
-    image: string,
-    unitPrice: number,
-    qtyOnHand: number
-}
-
-const Product: React.FC = () => {
+const ProductComponent: React.FC = () => {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [image, setImage] = useState<File | null>(null);
@@ -250,7 +242,7 @@ const Product: React.FC = () => {
     )
 }
 
-export default Product
+export default ProductComponent
 
 
 

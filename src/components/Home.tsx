@@ -3,7 +3,7 @@ import DefaultChart from "./cards/DefaultChart.tsx";
 import MinQtyCard from "./cards/MinQtyCard";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import Product from "./Product";
+import Product from "../models/ProductModel"
 
 const Home: React.FC = () => {
 
@@ -11,6 +11,7 @@ const Home: React.FC = () => {
     const [productCount, setProductCount] = useState<number>()
     const [customerCount, setCustomerCount] = useState<number>()
     const [orderCount, setOrderCount] = useState<number>()
+    const [income, setIncome] = useState<number>()
 
     useEffect(() => {
         findAllProducts()
@@ -31,6 +32,9 @@ const Home: React.FC = () => {
 
         const orderCount = await axios.get('http://localhost:3000/api/v1/orders/find-all-count');
         setOrderCount(orderCount.data)
+
+        const income = await axios.get('http://localhost:3000/api/v1/orders/find-income');
+        setIncome(income.data.totalCostSum);
     }
 
     return (
@@ -70,7 +74,7 @@ const Home: React.FC = () => {
                             thumbnail='https://img.freepik.com/free-photo/close-up-education-economy-objects_23-2149113553.jpg?w=360&t=st=1703617240~exp=1703617840~hmac=d1da3724c6c091e3daa76b29894c92b7773a8bdabd78e1de04c3c45a101c4e68'
                             description='This includes the Income Details'
                             title='Income'
-                            value={250}
+                            value={income}
                             key={1}
                         />
                     </div>
