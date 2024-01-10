@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Modal} from "react-bootstrap";
-import axios from "axios";
+import AxiosInstance from "../config/axiosInstance.ts";
 import Customer from "../models/CustomerModel"
 
 const CustomerComponent: React.FC = () => {
@@ -23,13 +23,13 @@ const CustomerComponent: React.FC = () => {
     }, [])
 
     const findAllCustomers = async () => {
-        const response = await axios.get('http://localhost:3000/api/v1/customers/find-all?searchText=&page=1&size=10');
+        const response = await AxiosInstance.get('/customers/find-all?searchText=&page=1&size=10');
         setCustomers(response.data)
     }
 
     const saveCustomer = async () => {
         try {
-            const response = await axios.post('http://localhost:3000/api/v1/customers/create', {
+            const response = await AxiosInstance.post('/customers/create', {
                 name, address, salary
             });
             console.log(response)
@@ -43,12 +43,12 @@ const CustomerComponent: React.FC = () => {
     }
 
     const deleteCustomer = async (id: string) => {
-        await axios.delete('http://localhost:3000/api/v1/customers/delete-by-id/' + id);
+        await AxiosInstance.delete('/customers/delete-by-id/' + id);
         findAllCustomers();
     }
 
     const loadModal = async (id: string) => {
-        const customerRecord = await axios.get('http://localhost:3000/api/v1/customers/find-by-id/' + id);
+        const customerRecord = await AxiosInstance.get('/customers/find-by-id/' + id);
         setSelectedCustomerId(customerRecord.data._id)
         setUpdatedName(customerRecord.data.name);
         setUpdatedAddress(customerRecord.data.address);
@@ -58,7 +58,7 @@ const CustomerComponent: React.FC = () => {
 
     const updateCustomer = async () => {
         try {
-            await axios.put('http://localhost:3000/api/v1/customers/update/' + selectedCustomerId, {
+            await AxiosInstance.put('/customers/update/' + selectedCustomerId, {
                 name: updatedName, address: updatedAddress, salary: updatedSalary
             });
             setModalState(false);

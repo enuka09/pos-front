@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios";
+import AxiosInstance from "../config/axiosInstance.ts";
 import Customer from "../models/CustomerModel"
 import Product from "../models/ProductModel"
 import Cart from "../models/CartModel";
@@ -43,24 +43,24 @@ const Order: React.FC = () => {
     }, [])
 
     const findAllCustomers = async () => {
-        const response = await axios.get('http://localhost:3000/api/v1/customers/find-all?searchText=&page=1&size=10');
+        const response = await AxiosInstance.get('/customers/find-all?searchText=&page=1&size=10');
         setCustomerDetails(response.data)
     }
 
     const getCustomerById = async (id: string) => {
-        const customerRecord = await axios.get('http://localhost:3000/api/v1/customers/find-by-id/' + id);
+        const customerRecord = await AxiosInstance.get('/customers/find-by-id/' + id);
         setSelectedCustomer(customerRecord.data);
         setAddress(customerRecord.data.address);
         setSalary(parseFloat(customerRecord.data.salary));
     }
 
     const findAllProducts = async () => {
-        const response = await axios.get('http://localhost:3000/api/v1/products/find-all?searchText=&page=1&size=10');
+        const response = await AxiosInstance.get('/products/find-all?searchText=&page=1&size=10');
         setProductDetails(response.data)
     }
 
     const getProductById = async (id: string) => {
-        const productRecord = await axios.get('http://localhost:3000/api/v1/products/find-by-id/' + id);
+        const productRecord = await AxiosInstance.get('/products/find-by-id/' + id);
         setSelectedProduct(productRecord.data);
         setName(productRecord.data.name);
         setDescription(productRecord.data.description);
@@ -226,7 +226,7 @@ const Order: React.FC = () => {
                             <div className="btn-order-context">
                                 <button className='btn btn-primary' onClick={async () => {
                                     try {
-                                        const response = await axios.post('http://localhost:3000/api/v1/orders/create/', {
+                                        const response = await AxiosInstance.post('/orders/create/', {
                                             date: new Date(),
                                             customerDetails: selectedCustomer,
                                             totalCost: 130,
@@ -242,7 +242,8 @@ const Order: React.FC = () => {
                                         console.error('Error placing order:', error);
                                         alert('Failed to save order');
                                     }
-                                }}>Place Order</button>
+                                }}>Place Order
+                                </button>
                             </div>
                         </div>
                     </div>

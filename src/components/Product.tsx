@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import axios from "axios";
+import AxiosInstance from "../config/axiosInstance.ts";
 import {Modal} from "react-bootstrap";
 import Product from "../models/ProductModel"
 
@@ -34,7 +34,7 @@ const ProductComponent: React.FC = () => {
     }, [])
 
     const findAllProducts = async () => {
-        const response = await axios.get('http://localhost:3000/api/v1/products/find-all?searchText=&page=1&size=10');
+        const response = await AxiosInstance.get('/products/find-all?searchText=&page=1&size=10');
         setProducts(response.data)
     }
 
@@ -50,7 +50,7 @@ const ProductComponent: React.FC = () => {
         // }
 
         try {
-            await axios.post('http://localhost:3000/api/v1/products/create', {
+            await AxiosInstance.post('/products/create', {
                 name, description, unitPrice, qtyOnHand, image: imageUrl
             });
             setName('');
@@ -64,12 +64,12 @@ const ProductComponent: React.FC = () => {
     }
 
     const deleteProduct = async (id:string) => {
-        await axios.delete('http://localhost:3000/api/v1/products/delete-by-id/' + id);
+        await AxiosInstance.delete('/products/delete-by-id/' + id);
         findAllProducts();
     }
 
     const loadModal = async (id:string) => {
-        const productRecord = await axios.get('http://localhost:3000/api/v1/products/find-by-id/' + id);
+        const productRecord = await AxiosInstance.get('/products/find-by-id/' + id);
         setSelectedProductId(productRecord.data._id)
         setUpdatedName(productRecord.data.name);
         setUpdatedDescription(productRecord.data.description);
@@ -80,7 +80,7 @@ const ProductComponent: React.FC = () => {
 
     const updateProduct = async () => {
         try {
-            await axios.put('http://localhost:3000/api/v1/products/update/' + selectedProductId, {
+            await AxiosInstance.put('/products/update/' + selectedProductId, {
                 name: updatedName, description: updatedDescription, unitPrice: updatedUnitPrice, qtyOnHand:updatedQtyOnHand
             });
             setModalState(false);
