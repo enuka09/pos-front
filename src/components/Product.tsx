@@ -2,13 +2,15 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import AxiosInstance from "../config/axiosInstance.ts";
 import {Modal} from "react-bootstrap";
 import Product from "../models/ProductModel"
-
-// import {storage} from "../config/firebase";
+import {storage} from "../config/firebase";
 
 const ProductComponent: React.FC = () => {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [image, setImage] = useState<File | null>(null);
+    const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setImage(event.target.files[0]);
+    }
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -23,12 +25,6 @@ const ProductComponent: React.FC = () => {
     const [updatedUnitPrice, setUpdatedUnitPrice] = useState<number | ''>('');
     const [updatedQtyOnHand, setUpdatedQtyOnHand] = useState<number | ''>('');
 
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setImage(e.target.files[0])
-        }
-    }
-
     useEffect(() => {
         findAllProducts()
     }, [])
@@ -39,15 +35,17 @@ const ProductComponent: React.FC = () => {
     }
 
     const saveProduct = async () => {
-        const imageUrl = 'https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/51SrMeLDbrL._AC_UL480_FMwebp_QL65_.jpg';
-        // if (image) {
-        //     const ref = ref(storage,`images/${Math.random() + '-' + image.name}`)
-        //     ref.put(image).then(()=>{
-        //        ref.getDownloadURL().then((url)=>{
-        //            console.log(url)
-        //        })
-        //     })
-        // }
+        let imageUrl = 'https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/51SrMeLDbrL._AC_UL480_FMwebp_QL65_.jpg';
+        if (image) {
+            try {
+                const storageRef = storage.ref();
+                const imageRef = storageRef.child(`images/${Math.random() + '-' + image.name}`)
+                const snapshot = await imageRef.put(image);
+                imageUrl = await snapshot.ref.getDownloadURL()
+            } catch (e) {
+                console.log(e)
+            }
+        }
 
         try {
             await AxiosInstance.post('/products/create', {
@@ -63,12 +61,12 @@ const ProductComponent: React.FC = () => {
         }
     }
 
-    const deleteProduct = async (id:string) => {
+    const deleteProduct = async (id: string) => {
         await AxiosInstance.delete('/products/delete-by-id/' + id);
         findAllProducts();
     }
 
-    const loadModal = async (id:string) => {
+    const loadModal = async (id: string) => {
         const productRecord = await AxiosInstance.get('/products/find-by-id/' + id);
         setSelectedProductId(productRecord.data._id)
         setUpdatedName(productRecord.data.name);
@@ -81,7 +79,10 @@ const ProductComponent: React.FC = () => {
     const updateProduct = async () => {
         try {
             await AxiosInstance.put('/products/update/' + selectedProductId, {
-                name: updatedName, description: updatedDescription, unitPrice: updatedUnitPrice, qtyOnHand:updatedQtyOnHand
+                name: updatedName,
+                description: updatedDescription,
+                unitPrice: updatedUnitPrice,
+                qtyOnHand: updatedQtyOnHand
             });
             setModalState(false);
             findAllProducts();
@@ -103,34 +104,38 @@ const ProductComponent: React.FC = () => {
                     <div className="col-12 col-sm-6 col-md-4" style={productStyleObj}>
                         <div className="form-group">
                             <label htmlFor="productName" className="mb-1">Product Name</label>
-                            <input value={name} type="text" onChange={(e) => setName(e.target.value)} className='form-control'
+                            <input value={name} type="text" onChange={(e) => setName(e.target.value)}
+                                   className='form-control'
                                    id='productName'/>
                         </div>
                     </div>
                     <div className="col-12 col-sm-6 col-md-4">
                         <div className="form-group">
                             <label htmlFor="price" className="mb-1">Unit Price</label>
-                            <input value={unitPrice} type="number" onChange={(e) => setUnitPrice(parseFloat(e.target.value))}
+                            <input value={unitPrice} type="number"
+                                   onChange={(e) => setUnitPrice(parseFloat(e.target.value))}
                                    className='form-control' id='price' min={0}/>
                         </div>
                     </div>
                     <div className="col-12 col-sm-6 col-md-4">
                         <div className="form-group">
                             <label htmlFor="qty" className="mb-1">QTY on Hand</label>
-                            <input value={qtyOnHand} type="number" onChange={(e) => setQtyOnHand(parseFloat(e.target.value))}
+                            <input value={qtyOnHand} type="number"
+                                   onChange={(e) => setQtyOnHand(parseFloat(e.target.value))}
                                    className='form-control' id='qty' min={0}/>
                         </div>
                     </div>
                     <div className="col-12 col-sm-6 col-md-4" style={productStyleObj}>
                         <div className="form-group">
                             <label htmlFor="image" className="mb-1">Product Image</label>
-                            <input type="file" onChange={handleImageChange} className='form-control' id='image'/>
+                            <input type="file" onChange={handleFile} className='form-control' id='image'/>
                         </div>
                     </div>
                     <div className="col-12">
                         <div className="form-group">
                             <label htmlFor="description" className="mb-1">Description</label>
-                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={5} className='form-control'
+                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={5}
+                                      className='form-control'
                                       id='description'/>
                         </div>
                     </div>
@@ -174,14 +179,16 @@ const ProductComponent: React.FC = () => {
                                     <td>
                                         <button onClick={() => {
                                             loadModal(product._id)
-                                        }} className="btn btn-outline-success btn-sm">Update</button>
+                                        }} className="btn btn-outline-success btn-sm">Update
+                                        </button>
                                     </td>
                                     <td>
                                         <button onClick={() => {
                                             if (confirm('Are you Sure?')) {
                                                 deleteProduct(product._id)
                                             }
-                                        }} className="btn btn-outline-danger btn-sm">Delete</button>
+                                        }} className="btn btn-outline-danger btn-sm">Delete
+                                        </button>
                                     </td>
                                     <td>
                                         <button className="btn btn-outline-info btn-sm">View</button>
@@ -223,8 +230,8 @@ const ProductComponent: React.FC = () => {
                     <div className="col-12">
                         <div className="form-group">
                             <textarea defaultValue={updatedDescription}
-                                   onChange={(e) => setUpdatedDescription(e.target.value)}
-                                   className='form-control' placeholder='Product Description'/>
+                                      onChange={(e) => setUpdatedDescription(e.target.value)}
+                                      className='form-control' placeholder='Product Description'/>
                         </div>
                     </div>
                     <br/>
