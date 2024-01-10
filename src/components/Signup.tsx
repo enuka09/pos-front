@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import AxiosInstance from '../config/axiosInstance.ts';
 import {Link} from "react-router-dom";
 
-
 const Signup: React.FC = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');

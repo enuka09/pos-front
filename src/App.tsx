@@ -6,6 +6,8 @@ import Customer from "./components/Customer";
 import Order from "./components/Order";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import Calculator from "./components/Calculator";
+
 
 function App() {
     return (
@@ -38,6 +40,9 @@ function App() {
                                 <li className="nav-item">
                                     <Link to='/login' className="nav-link">Login</Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link to='/calc' className="nav-link">Calculator</Link>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -50,6 +55,7 @@ function App() {
                     <Route path='/orders' element={<Order/>}/>
                     <Route path='/login' element={<Login/>}/>
                     <Route path='/signup' element={<Signup/>}/>
+                    <Route path='/calc' element={<Calculator/>}/>
                 </Routes>
             </div>
         </Router>
